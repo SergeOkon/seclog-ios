@@ -37,7 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2338A1495327549EB38D4F11 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		2338A1495327549EB38D4F11 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		35E73C351378D443BB94135A /* Pods-SecLog_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SecLog_Tests.release.xcconfig"; path = "Target Support Files/Pods-SecLog_Tests/Pods-SecLog_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		4C2C9AE9AE92CFB8DFD0835E /* Pods-SecLog_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SecLog_Example.debug.xcconfig"; path = "Target Support Files/Pods-SecLog_Example/Pods-SecLog_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		56BCFF11216903B02AFCACE2 /* Pods-SecLog_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SecLog_Example.release.xcconfig"; path = "Target Support Files/Pods-SecLog_Example/Pods-SecLog_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -64,8 +64,8 @@
 		71A42B1CFDAD78E5ABB740DA /* Pods_SecLog_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SecLog_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9E3B8F7F26EFAE157730C7D2 /* Pods-SecLog_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SecLog_Tests.debug.xcconfig"; path = "Target Support Files/Pods-SecLog_Tests/Pods-SecLog_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		A91773062ADD89B0D57E5B03 /* SecLog.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = SecLog.podspec; path = ../SecLog.podspec; sourceTree = "<group>"; };
-		E12E97ACBD6684903A6040FE /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		A91773062ADD89B0D57E5B03 /* SecLog.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SecLog.podspec; path = ../SecLog.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		E12E97ACBD6684903A6040FE /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		E54496267A60BE3A0A90E206 /* Pods_SecLog_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SecLog_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -103,7 +103,6 @@
 				9E3B8F7F26EFAE157730C7D2 /* Pods-SecLog_Tests.debug.xcconfig */,
 				35E73C351378D443BB94135A /* Pods-SecLog_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -259,6 +258,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);

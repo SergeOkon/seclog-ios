@@ -1,0 +1,23 @@
+PODS:
+  - Kiwi (3.0.0)
+  - SecLog (0.1.0)
+
+DEPENDENCIES:
+  - Kiwi
+  - SecLog (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - Kiwi
+
+EXTERNAL SOURCES:
+  SecLog:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Kiwi: fbeafef0f00e4d8f7dcb3420a4930afe70af77f7
+  SecLog: 70766eafc7b88ededfd1b5493379ecb0b7ac07d1
+
+PODFILE CHECKSUM: 8f5937ba445c3fd02638052533e4b86e8acfaac9
+
+COCOAPODS: 1.8.3

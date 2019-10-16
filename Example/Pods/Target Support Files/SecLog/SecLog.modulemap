@@ -1,0 +1,6 @@
+framework module SecLog {
+  umbrella header "SecLog-umbrella.h"
+
+  export *
+  module * { export * }
+}
