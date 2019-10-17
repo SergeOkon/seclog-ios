@@ -3,7 +3,7 @@ This application makes use of the following third party libraries:
 
 ## SecLog
 
-Copyright (c) 2019 Serge Okon <sergeokon@users.noreply.github.com>
+Copyright (c) 2019 Serge Okon
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

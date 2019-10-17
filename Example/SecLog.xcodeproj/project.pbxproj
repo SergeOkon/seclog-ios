@@ -246,7 +246,7 @@
 			attributes = {
 				CLASSPREFIX = SLP;
 				LastUpgradeCheck = 0720;
-				ORGANIZATIONNAME = "Serge Okon";
+				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;

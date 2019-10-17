@@ -10,6 +10,9 @@
 #endif
 #endif
 
+#import "SecLog.h"
+#import "SLPFileWriter.h"
+#import "SLPMain.h"
 
 FOUNDATION_EXPORT double SecLogVersionNumber;
 FOUNDATION_EXPORT const unsigned char SecLogVersionString[];
