@@ -8,6 +8,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void) confirmOrCreateLogFolder;
 + (NSString *) presentLogFilePath;
 
++(void) renamePreviousLogFile;
+
 @end
 
 NS_ASSUME_NONNULL_END

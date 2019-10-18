@@ -2,6 +2,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// Keep these values in the range of 0-255
 typedef enum {
     OFF = 0,
     SECLOG_FATAL = 10,

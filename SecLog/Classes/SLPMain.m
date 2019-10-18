@@ -33,39 +33,63 @@ const int DEFAULT_LOG_LEVEL = SECLOG_INFO;
         _maxLogfiles = DEFAULT_MAX_LOG_FILES;
         _maxLogSpaceMib = DEFAULT_MAX_LOG_FILE_SIZE_MIB;
         
-        [SLPFolder confirmOrCreateLogFolder];
-        _fileWriter = [[SLPFileWriter alloc] init];
+        // Set up console Logging.
         _outputDateToConsoleLog = TRUE;
         _consoleDateFormatter = [[NSDateFormatter alloc] init];
         _consoleDateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
         _consoleDateFormatter.dateFormat = @"yyyy-MM-dd'.'HH:mm:ss";
         _consoleDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+        
+        // Set up file logging
+        _fileWriter = [[SLPFileWriter alloc] init];
     }
     return self;
 }
 
-- (void)log:(NSString *)message level:(SecLogLevel)level {
+- (void)logMessage:(NSString *)message
+      logLevel:(SecLogLevel)level {
     NSString *messageToWrite = message && [message isKindOfClass:[NSString class]] ? message : @"(no log message given)";
     
-    if (self.consoleLoggingLevel >= self.consoleLoggingLevel) {
+    if (level <= self.consoleLoggingLevel) {
         NSString* dateStr = self.outputDateToConsoleLog ?
             [[self.consoleDateFormatter stringFromDate:[NSDate date]] stringByAppendingString:@" "] :
         @"";
         NSLog(@"%@%@", dateStr, messageToWrite);
     }
     
-    if (self.consoleLoggingLevel >= self.fileLoggingLevel) {
-            // TODO - send to file logging queue.
+    if (level <= self.fileLoggingLevel) {
+        [self.fileWriter logText:message
+                        logLevel:level];
     }
 }
 
+-(void)logData:(NSData *)data
+         logLevel:(SecLogLevel)level {
+    if (level <= self.fileLoggingLevel) {
+    [self.fileWriter logGenericData:data
+                           logLevel:level];
+    }
+}
+
+-(void)logImage:(NSData *)imageData
+          logLevel:(SecLogLevel)level {
+    if (level <= self.fileLoggingLevel) {
+    [self.fileWriter logImageData:imageData
+                           logLevel:level];
+    }
+}
+
+-(void)logData: (NSData *)data      { [self logData:data       logLevel:DEFAULT_LOG_LEVEL]; }
+-(void)logImage:(NSData *)imageData { [self logImage:imageData logLevel:DEFAULT_LOG_LEVEL]; }
+
+
 // Shortcut log functions
--(void)fatal:(NSString *)fatalMessage   { [self log:fatalMessage level:SECLOG_FATAL]; }
--(void)error:(NSString *)errorMessage   { [self log:errorMessage level:SECLOG_ERROR]; }
--(void)warn: (NSString *)warningMessage { [self log:warningMessage level:SECLOG_WARNING]; }
--(void)info: (NSString *)infoMessage    { [self log:infoMessage level:SECLOG_INFO]; }
--(void)debug:(NSString *)debugMessage   { [self log:debugMessage level:SECLOG_DEBUG]; }
--(void)trace:(NSString *)traceMessage   { [self log:traceMessage level:SECLOG_TRACE]; }
+-(void)fatal:(NSString *)fatalMessage   { [self logMessage:fatalMessage   logLevel:SECLOG_FATAL];   }
+-(void)error:(NSString *)errorMessage   { [self logMessage:errorMessage   logLevel:SECLOG_ERROR];   }
+-(void)warn: (NSString *)warningMessage { [self logMessage:warningMessage logLevel:SECLOG_WARNING]; }
+-(void)info: (NSString *)infoMessage    { [self logMessage:infoMessage    logLevel:SECLOG_INFO];    }
+-(void)debug:(NSString *)debugMessage   { [self logMessage:debugMessage   logLevel:SECLOG_DEBUG];   }
+-(void)trace:(NSString *)traceMessage   { [self logMessage:traceMessage   logLevel:SECLOG_TRACE];   }
 
 // Use the max values to cleanup the logging folder.
 // Suggest calling this on every start up.

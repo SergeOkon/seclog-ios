@@ -11,7 +11,11 @@
 #endif
 
 #import "SecLog.h"
+#import "SLPBlockCrypto.h"
 #import "SLPFileWriter.h"
+#import "SLPFolder.h"
+#import "SLPFrame.h"
+#import "SLPKeychain.h"
 #import "SLPMain.h"
 
 FOUNDATION_EXPORT double SecLogVersionNumber;
