@@ -10,6 +10,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 +(void) renamePreviousLogFile;
 
++(void) cleanOutLogsAndKeychainEntriesKeeping:(NSUInteger)logFilesToKeep
+                          maxTotalLogSizeInMB:(NSUInteger)maxLogSize;
+
 @end
 
 NS_ASSUME_NONNULL_END

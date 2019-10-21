@@ -21,8 +21,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    
-    
 }
 
 - (void)didReceiveMemoryWarning
@@ -31,16 +29,29 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)sharedInstanceInit:(id)sender {
+    [SecLog sharedInstance];
+}
+
+- (IBAction)cleanup:(id)sender {
+    [[SecLog sharedInstance] cleanup];
+}
+
 - (IBAction)tapInfo:(id)sender {
     SecLog* logger = [SecLog sharedInstance];
     [logger info:[NSString stringWithFormat:@"This is an info message at %@", [NSDate date]]];
 }
 
 - (IBAction)tapWarning:(id)sender {
+    SecLog* logger = [SecLog sharedInstance];
+    [logger warn:[NSString stringWithFormat:@"This is an info message at %@", [NSDate date]]];
 }
 
 - (IBAction)tapError:(id)sender {
+    SecLog* logger = [SecLog sharedInstance];
+    [logger error:[NSString stringWithFormat:@"This is an info message at %@", [NSDate date]]];
 }
+
 
 
 @end

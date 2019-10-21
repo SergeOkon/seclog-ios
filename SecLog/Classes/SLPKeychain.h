@@ -7,13 +7,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSData *)randomDataGenerateSecure:(size_t)length;
 
-+ (NSString *) makeKeychainIdentifierForLogFileKey:(NSString *)logId;
-
 + (void) keychainDeleteDataWithIdentifier:(NSString *)identifier;
 + (BOOL) keychainStoreData:(NSData *)data
          withIdentifier:(NSString *)identifier;
 + (NSData * _Nullable)keychainGetDataWithIdentifier:(NSString *)identifier;
 
++ (NSDictionary *)getAllKeychainItems;
 
 @end
 

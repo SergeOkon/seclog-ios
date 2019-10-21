@@ -3,6 +3,8 @@
 
 @implementation SLPKeychain
 
+NSString* keychainService = @"SecureLog_KeychainService";
+
 const long keySize = 32;
 
 + (NSData *)randomDataGenerateSecure:(size_t)length {
@@ -13,14 +15,11 @@ const long keySize = 32;
         nil;
 }
 
-+ (NSString *) makeKeychainIdentifierForLogFileKey:(NSString *)logId {
-    return [NSString stringWithFormat:@"seclog-%@", logId];
-}
-
 + (void) keychainDeleteDataWithIdentifier: (NSString *)identifier {
     if (!identifier || [identifier length] == 0) return;
-    NSDictionary *query = @{ (id)kSecAttrGeneric: identifier,
-                             (id)kSecClass: (id)kSecClassGenericPassword };
+    NSDictionary *query = @{ (id)kSecAttrAccount: identifier,
+                             (id)kSecAttrService: keychainService,
+                             (id)kSecClass:       (id)kSecClassGenericPassword };
     SecItemDelete((CFDictionaryRef)query); // OK to ignore status here
 }
 
@@ -28,9 +27,10 @@ const long keySize = 32;
             withIdentifier:(NSString *)identifier
 {
     if (!data || [data length] == 0 || !identifier || [identifier length] == 0) return FALSE;
-    NSDictionary *query = @{ (id)kSecAttrGeneric: identifier,
-                             (id)kSecClass: (id)kSecClassGenericPassword };
-    
+    NSDictionary *query = @{ (id)kSecAttrAccount: identifier,
+                             (id)kSecAttrService: keychainService,
+                             (id)kSecClass:       (id)kSecClassGenericPassword
+    };
     NSMutableDictionary *item = [NSMutableDictionary dictionaryWithDictionary:query];
     [item setObject:data forKey:(id)kSecValueData];
     OSStatus status = SecItemAdd((CFDictionaryRef)item, NULL);
@@ -43,10 +43,11 @@ const long keySize = 32;
 + (NSData *)keychainGetDataWithIdentifier:(NSString *)identifier
 {
     if (!identifier || [identifier length] == 0) return nil;
-    NSDictionary *query = @{ (id)kSecAttrGeneric: identifier,
-                             (id)kSecClass: (id)kSecClassGenericPassword,
-                             (id)kSecReturnData: (id)kCFBooleanTrue,
-                             (id)kSecMatchLimit: (id)kSecMatchLimitOne };
+    NSDictionary *query = @{ (id)kSecAttrAccount: identifier,
+                             (id)kSecAttrService: keychainService,
+                             (id)kSecClass:       (id)kSecClassGenericPassword,
+                             (id)kSecReturnData:  (id)kCFBooleanTrue,
+                             (id)kSecMatchLimit:  (id)kSecMatchLimitOne };
     CFTypeRef data = NULL;
     OSStatus status = SecItemCopyMatching((CFDictionaryRef)query,  (CFTypeRef *)&data);
     if (status == noErr && data) {
@@ -54,5 +55,26 @@ const long keySize = 32;
     }
     return nil;
 }
+
++ (NSDictionary *)getAllKeychainItems {
+    NSDictionary *query = @{ (id)kSecClass:         (id)kSecClassGenericPassword,
+                             (id)kSecAttrService:   keychainService,
+                             (id)kSecReturnData:    (id)kCFBooleanTrue,
+                             (id)kSecReturnAttributes: (id)kCFBooleanTrue,
+                             (id)kSecMatchLimit:    (id)kSecMatchLimitAll };
+    CFTypeRef data = NULL;
+    OSStatus status = SecItemCopyMatching((CFDictionaryRef)query,  (CFTypeRef *)&data);
+    if (status != noErr || !data) {
+        return @{};
+    }
+    NSArray *keychainResult = (__bridge NSArray *)data;
+    NSMutableDictionary *result = [[NSMutableDictionary alloc] initWithCapacity:[keychainResult count]];
+    [keychainResult enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSDictionary *keyChainDict = obj;
+        [result setValue:keyChainDict[(id)kSecValueData] forKey:keyChainDict[(id)kSecAttrAccount]];
+    }];
+    return [NSDictionary dictionaryWithDictionary:result];
+}
+
 
 @end

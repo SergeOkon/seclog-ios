@@ -30,14 +30,12 @@ const char *FILE_FORMAT_SIGNATURE_V1 = "SecureLoggerIP1"; // Secure Logger, In P
 
 @end
 
-
-
 /*
 Current Log File - FileFormat
  @00h - 16 bytes - signature "SecureLogCurrent"
  @10h - 8 bytes  - date of creation
  @10h - 8 bytes - reserved - keep zeros for now
- @20h - 16 bytes - 128-bit Log Name - date-based (also the key-ID - look it up in keychain)
+ @20h - 16 bytes - 128-bit Log Name - numeric, date-based (also the key-ID - look it up in keychain)
  @30h - 16 bytes - 128-bit IV for AES (in plain text)
  @40h - 16 bytes * n - blocks start here.
 */
@@ -55,7 +53,7 @@ Current Log File - FileFormat
         _dateFormatter = [[NSDateFormatter alloc] init];
         _dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
         [_dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
-        [_dateFormatter setDateFormat:@"YYMMddHHmmssms"];
+        [_dateFormatter setDateFormat:@"YYMMddHHmmssSSS0"];
         
         __weak SLPFileWriter *weakSelf = self;
         dispatch_async(self.serialQueue, ^{
@@ -64,7 +62,7 @@ Current Log File - FileFormat
             // Create log folder, or rename the old log file, if present.
             [SLPFolder confirmOrCreateLogFolder];
             [SLPFolder renamePreviousLogFile];
-            
+        
             // Create a New Log file
             NSString *logFile =[SLPFolder presentLogFilePath];
             [weakSelf.fileManager createFileAtPath:logFile contents:[NSData new] attributes:nil];
@@ -95,7 +93,7 @@ Current Log File - FileFormat
             weakSelf.blockCrypto = [[SLPBlockCrypto alloc] initEncryptorWithKey:aesKey
                                                                             ivs:IVs];
             [SLPKeychain keychainStoreData:aesKey
-                            withIdentifier:[SLPKeychain makeKeychainIdentifierForLogFileKey:logName]];
+                            withIdentifier:logName];
         });
     }
     return self;

@@ -1,8 +1,12 @@
+#import "SLPKeychain.h"
+
 #import "SLPFolder.h"
 
 NSString* SECURE_LOG_FOLDER_NAME = @"SecureLog";
 NSString* SECURE_LOG_PRESENT_NAME = @"seclog.present.bin";
 
+const int ATTEMPTS_TO_CLOSE = 10;
+const NSTimeInterval WAIT_INTERVAL_FOR_ATTEMPTS_TO_CLOSE = 0.1;
 
 @implementation SLPFolder
 
@@ -49,45 +53,108 @@ NSString* SECURE_LOG_PRESENT_NAME = @"seclog.present.bin";
     }
 }
 
-+(void) renamePreviousLogFile {
-    NSString *presentLogPath = [self presentLogFilePath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:presentLogPath]) {
-        NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:presentLogPath];
++(NSString *) getLogNameFromFilePath:(NSString *)path {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:path];
         NSData *fileData = [handle readDataOfLength:16 + 8 + 8 + 16]; // 16 header, 8+8 date&reserved, 16 for Name
         [handle closeFile];
         if (fileData.length < 32 + 16) {
-            // Invalid file - too short. Let's just delete it.
-            [self deletePreviousFile];
-            return;
+            return nil;  // Invalid file - too short.
         }
-        
         NSData *nameData = [NSData dataWithBytes:((unsigned char *)[fileData bytes] + 32) length:16];
         NSString *name = [[NSString alloc] initWithData:nameData encoding:NSASCIIStringEncoding];
-        if ([name length] != 16 || ![self isAllDigits:name]) {
-            // Invalid file - name should be an all-digit date stamp. Let's just delete it.
-            [self deletePreviousFile];
-            return;
+        if (!name || [name length] != 16 || ![self isAllDigits:name]) {
+            return nil; // Invalid file (name should be an all-digit date stamp), or name content.
         }
-        
-        NSString *filename = [NSString stringWithFormat:@"seclog.%@.bin", name];
-        NSString *newPath = [[self getLogFolderPath] stringByAppendingPathComponent:filename];
-        
-        BOOL success = FALSE;
-        NSUInteger tryCount = 0;
-        while (!success && tryCount < 5) {
-            success = [[NSFileManager defaultManager] moveItemAtPath:presentLogPath toPath:newPath error:nil];
-            if (!success) {
-                [NSThread sleepForTimeInterval: 0.1]; // To let the file be closed by another queue.
-            }
-            tryCount++;
+        return name;
+    }
+    return nil; // file does not exist
+}
+
++(void) renamePreviousLogFile {
+    NSString *presentLogPath = [self presentLogFilePath];
+
+    NSString *name = [self getLogNameFromFilePath:presentLogPath];
+    if (!name) {
+        // Invalid file (name should be an all-digit date stamp), or name content  Let's just delete it.
+        [self deletePreviousFile];
+        return;
+    }
+    
+    NSString *filename = [NSString stringWithFormat:@"seclog.%@.bin", name];
+    NSString *newPath = [[self getLogFolderPath] stringByAppendingPathComponent:filename];
+    
+    BOOL success = FALSE;
+    NSUInteger tryCount = 0;
+    while (!success && tryCount < ATTEMPTS_TO_CLOSE) {
+        success = [[NSFileManager defaultManager] moveItemAtPath:presentLogPath
+                                                          toPath:newPath
+                                                           error:nil];
+        if (!success) {
+            // To let the file be closed by another queue.
+            [NSThread sleepForTimeInterval:WAIT_INTERVAL_FOR_ATTEMPTS_TO_CLOSE];
         }
-        if (!success && tryCount == 5) {
-            NSLog(@"SLPFolder - unable to renamePreviousLogFile");
-        }
+        tryCount++;
+    }
+    if (!success && tryCount == ATTEMPTS_TO_CLOSE) {
+        NSLog(@"SLPFolder - unable to renamePreviousLogFile after %d attempts to close", ATTEMPTS_TO_CLOSE);
     }
 }
 
++(NSUInteger) getLogFileByteSize:(NSString *)filePath {
+    return [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] fileSize];
+}
 
++(void) cleanOutLogsAndKeychainEntriesKeeping:(NSUInteger)logFilesToKeep
+                          maxTotalLogSizeInMB:(NSUInteger)maxLogSize {
+    NSString *logFolder = [self getLogFolderPath];
+
+    // Get all keychain entries available
+    NSMutableDictionary<NSString *, NSData * > *allKeychainEntriesUnaccountedFor = [NSMutableDictionary dictionaryWithDictionary:[SLPKeychain getAllKeychainItems]];
+
+    NSArray<NSString *> *fullDirectoryListing = [[NSFileManager defaultManager]
+                                     contentsOfDirectoryAtPath:logFolder error:nil];
+    NSMutableArray<NSString *> *logFileNamesUnaccountedFor = [NSMutableArray
+                             arrayWithArray:[[fullDirectoryListing filteredArrayUsingPredicate:
+                                              [NSCompoundPredicate andPredicateWithSubpredicates:@[
+        [NSPredicate predicateWithFormat:@"SELF beginswith[c] 'seclog.'"],
+        [NSPredicate predicateWithFormat:@"SELF  endswith[c]  '.bin'"]
+    ]]] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
+    
+    if ([logFileNamesUnaccountedFor count] >= 1) {
+        NSUInteger keptTotalSize = 0;
+        NSUInteger totalLogsFiles = 0;
+        NSUInteger skippedFiles = 0;
+        
+        do  {
+            NSString *logFileName = [logFileNamesUnaccountedFor
+                                     objectAtIndex:[logFileNamesUnaccountedFor count] - 1 - skippedFiles];
+            NSString *logName = [self getLogNameFromFilePath:
+                                 [logFolder stringByAppendingPathComponent:logFileName]];
+            if (logName && allKeychainEntriesUnaccountedFor[logName]) {
+                keptTotalSize += [self getLogFileByteSize:logName];
+                totalLogsFiles += 1;
+                [logFileNamesUnaccountedFor removeLastObject];
+                [allKeychainEntriesUnaccountedFor removeObjectForKey:logName];
+            } else {
+                skippedFiles += 1;
+            }
+        } while ([logFileNamesUnaccountedFor count] > skippedFiles &&
+                 keptTotalSize <= (maxLogSize * 1024 * 1024) &&
+                 totalLogsFiles < logFilesToKeep);
+    }
+                                    
+    // If not claimed - remove the log file and its keys from the keychain
+    NSArray<NSString *> *filesToRemove = [NSArray arrayWithArray:logFileNamesUnaccountedFor];
+    for (NSString *fileName in filesToRemove) {
+        [[NSFileManager defaultManager] removeItemAtPath:[logFolder stringByAppendingPathComponent:fileName]
+                                                   error:nil];
+    }
+    NSArray<NSString *> *keysToRemove = [allKeychainEntriesUnaccountedFor allKeys];
+    for (NSString *keyId in keysToRemove) {
+        [SLPKeychain keychainDeleteDataWithIdentifier:keyId];
+    }
+}
 
 
 @end

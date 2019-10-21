@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="BkG-zp-gvj">
-                                <rect key="frame" x="32" y="16" width="311" height="86"/>
+                                <rect key="frame" x="32" y="16" width="311" height="124"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SecLog for iOS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fo9-av-jri">
                                         <rect key="frame" x="96.5" y="0.0" width="118.5" height="20.5"/>
@@ -34,42 +34,70 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="fhH-le-JAB">
-                                        <rect key="frame" x="17" y="56" width="277" height="30"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="E8Q-CC-C3i">
+                                        <rect key="frame" x="34" y="56" width="243" height="30"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log a message:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Sj-Ec-SQv" userLabel="Log a message">
-                                                <rect key="frame" x="0.0" y="0.0" width="120" height="30"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log System" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aCW-xH-67x" userLabel="Log a message">
+                                                <rect key="frame" x="0.0" y="0.0" width="90" height="30"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dzJ-I6-GeQ">
+                                                <rect key="frame" x="108" y="0.0" width="30" height="30"/>
+                                                <state key="normal" title="Init"/>
+                                                <connections>
+                                                    <action selector="sharedInstanceInit:" destination="whP-gf-Uak" eventType="touchUpInside" id="BX7-Ir-TBy"/>
+                                                    <action selector="tapInfo:" destination="whP-gf-Uak" eventType="touchUpInside" id="GUs-qP-sm0"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H9W-hX-nJA">
+                                                <rect key="frame" x="156" y="0.0" width="87" height="30"/>
+                                                <state key="normal" title="Run Cleanup"/>
+                                                <connections>
+                                                    <action selector="cleanup:" destination="whP-gf-Uak" eventType="touchUpInside" id="jTg-NQ-9N3"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="tintColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="fhH-le-JAB">
+                                        <rect key="frame" x="1" y="94" width="309" height="30"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log Message  👉" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Sj-Ec-SQv" userLabel="Log a message">
+                                                <rect key="frame" x="0.0" y="0.0" width="134" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bRw-9P-rWP">
-                                                <rect key="frame" x="132" y="0.0" width="30" height="30"/>
+                                                <rect key="frame" x="152" y="0.0" width="30" height="30"/>
                                                 <state key="normal" title="Info"/>
                                                 <connections>
                                                     <action selector="tapInfo:" destination="whP-gf-Uak" eventType="touchUpInside" id="aSo-Sr-27C"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uQM-SZ-ycL">
-                                                <rect key="frame" x="174" y="0.0" width="57" height="30"/>
+                                                <rect key="frame" x="200" y="0.0" width="57" height="30"/>
                                                 <state key="normal" title="Warning"/>
                                                 <connections>
                                                     <action selector="tapWarning:" destination="whP-gf-Uak" eventType="touchUpInside" id="arW-SL-g6M"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mnd-Wa-dRF">
-                                                <rect key="frame" x="243" y="0.0" width="34" height="30"/>
+                                                <rect key="frame" x="275" y="0.0" width="34" height="30"/>
                                                 <state key="normal" title="Error"/>
                                                 <connections>
                                                     <action selector="tapError:" destination="whP-gf-Uak" eventType="touchUpInside" id="X16-fe-IFf"/>
                                                 </connections>
                                             </button>
                                         </subviews>
+                                        <color key="tintColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </stackView>
                                 </subviews>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="BkG-zp-gvj" firstAttribute="top" secondItem="uEw-UM-LJ8" secondAttribute="bottom" constant="16" id="4sP-Xq-dWP"/>
                             <constraint firstItem="BkG-zp-gvj" firstAttribute="leading" secondItem="TpU-gO-2f1" secondAttribute="leadingMargin" constant="16" id="JyK-W6-dS9"/>

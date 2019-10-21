@@ -66,16 +66,16 @@ const int DEFAULT_LOG_LEVEL = SECLOG_INFO;
 -(void)logData:(NSData *)data
          logLevel:(SecLogLevel)level {
     if (level <= self.fileLoggingLevel) {
-    [self.fileWriter logGenericData:data
-                           logLevel:level];
+        [self.fileWriter logGenericData:data
+                               logLevel:level];
     }
 }
 
 -(void)logImage:(NSData *)imageData
           logLevel:(SecLogLevel)level {
     if (level <= self.fileLoggingLevel) {
-    [self.fileWriter logImageData:imageData
-                           logLevel:level];
+        [self.fileWriter logImageData:imageData
+                               logLevel:level];
     }
 }
 
@@ -94,7 +94,8 @@ const int DEFAULT_LOG_LEVEL = SECLOG_INFO;
 // Use the max values to cleanup the logging folder.
 // Suggest calling this on every start up.
 -(void)cleanup {
-    // TODO - write the cleanup procedure.
+    [SLPFolder cleanOutLogsAndKeychainEntriesKeeping:4
+                                 maxTotalLogSizeInMB:1];
 }
 
 
