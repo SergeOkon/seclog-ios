@@ -12,6 +12,7 @@
 
 #import "SecLog.h"
 #import "SLPBlockCrypto.h"
+#import "SLPCurve25519.h"
 #import "SLPFileWriter.h"
 #import "SLPFolder.h"
 #import "SLPFrame.h"
