@@ -1,3 +1,6 @@
+@import Foundation;
+
+#import "SLPConstants.h"
 #import "SLPFolder.h"
 #import "SLPKeychain.h"
 #import "SLPFrame.h"
@@ -6,7 +9,7 @@
 #import "SLPFileWriter.h"
 
 const char *DISPATCH_QUEUE_NAME = "SecLog Serial File Queue";
-const char *FILE_FORMAT_SIGNATURE_V1 = "SecureLoggerIP1"; // Secure Logger, In Progress, V1
+
 
 
 @interface SLPFileWriter()
@@ -29,16 +32,6 @@ const char *FILE_FORMAT_SIGNATURE_V1 = "SecureLoggerIP1"; // Secure Logger, In P
 @property (atomic) BOOL readyToShutdown;
 
 @end
-
-/*
-Current Log File - FileFormat
- @00h - 16 bytes - signature "SecureLogCurrent"
- @10h - 8 bytes  - date of creation
- @10h - 8 bytes - reserved - keep zeros for now
- @20h - 16 bytes - 128-bit Log Name - numeric, date-based (also the key-ID - look it up in keychain)
- @30h - 16 bytes - 128-bit IV for AES (in plain text)
- @40h - 16 bytes * n - blocks start here.
-*/
 
 @implementation SLPFileWriter
 
@@ -82,9 +75,9 @@ Current Log File - FileFormat
             
             // Write the file header for the current log
             NSMutableData *header = [[NSMutableData alloc] init];
-            [header appendBytes:FILE_FORMAT_SIGNATURE_V1 length:16];
-            [header appendBytes:reservedAsZerosForNow length:sizeof(reservedAsZerosForNow)];
+            [header appendData:[SLP_INPROGRESS_FILE_SIGNATURE_V1 dataUsingEncoding:NSASCIIStringEncoding]];
             [header appendBytes:&dateMs length:8];
+            [header appendBytes:reservedAsZerosForNow length:sizeof(reservedAsZerosForNow)];
             [header appendData:[logName dataUsingEncoding:NSASCIIStringEncoding]];
             [header appendData:IVs];
             [weakSelf.fileHandle writeData:header];

@@ -1,11 +1,3 @@
-//
-//  SLPViewController.m
-//  SecLog
-//
-//  Created by Serge Okon on 10/16/2019.
-//  Copyright (c) 2019 Serge Okon. All rights reserved.
-//
-
 #import "SLPViewController.h"
 
 @interface SLPViewController ()
@@ -34,7 +26,7 @@
 }
 
 - (IBAction)cleanup:(id)sender {
-    [[SecLog sharedInstance] cleanup];
+    [SecLog cleanUpKeepingLogFiles:4 maxTotalLogSizeInMiB:1];
 }
 
 - (IBAction)tapInfo:(id)sender {

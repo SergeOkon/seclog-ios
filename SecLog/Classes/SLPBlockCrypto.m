@@ -1,4 +1,5 @@
-#include <CommonCrypto/CommonCryptor.h>
+@import Foundation;
+@import CommonCrypto;
 
 #import "SLPBlockCrypto.h"
 

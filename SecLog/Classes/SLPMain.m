@@ -1,6 +1,9 @@
-#import "SLPMain.h"
+@import Foundation;
+
 #import "SLPFileWriter.h"
 #import "SLPFolder.h"
+
+#import "SLPMain.h"
 
 // DEFAULTS
 const int DEFAULT_LOG_LEVEL = SECLOG_INFO;
@@ -16,11 +19,11 @@ const int DEFAULT_LOG_LEVEL = SECLOG_INFO;
 
 @implementation SLPMain
 
-// https://stackoverflow.com/q/5720029
 + (instancetype)sharedInstance {
+    // https://stackoverflow.com/q/5720029
     static dispatch_once_t once;
     static id sharedInstance;
-    dispatch_once(&once, ^{  sharedInstance = [[self alloc] init]; });
+    dispatch_once(&once, ^{ sharedInstance = [[self alloc] init]; });
     return sharedInstance;
 }
 
@@ -30,8 +33,6 @@ const int DEFAULT_LOG_LEVEL = SECLOG_INFO;
         // Set up defaults
         _consoleLoggingLevel = DEFAULT_LOG_LEVEL;
         _fileLoggingLevel = DEFAULT_LOG_LEVEL;
-        _maxLogfiles = DEFAULT_MAX_LOG_FILES;
-        _maxLogSpaceMib = DEFAULT_MAX_LOG_FILE_SIZE_MIB;
         
         // Set up console Logging.
         _outputDateToConsoleLog = TRUE;
@@ -93,9 +94,10 @@ const int DEFAULT_LOG_LEVEL = SECLOG_INFO;
 
 // Use the max values to cleanup the logging folder.
 // Suggest calling this on every start up.
--(void)cleanup {
-    [SLPFolder cleanOutLogsAndKeychainEntriesKeeping:4
-                                 maxTotalLogSizeInMB:1];
++(void)cleanUpKeepingLogFiles:(NSUInteger)nFiles
+          maxTotalLogSizeInMiB:(NSUInteger)maxSizeMb {
+    [SLPFolder cleanOutLogsAndKeychainEntriesKeeping:nFiles
+                                 maxTotalLogSizeInMB:maxSizeMb];
 }
 
 

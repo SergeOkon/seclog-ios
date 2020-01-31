@@ -4,11 +4,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SLPCurve25519 : NSObject
 
-+(NSData *)generatePrivateKey;
++(NSMutableData *)generatePrivateKey;
 
-+(NSData *)publicKeyGivenPrivateKey:(NSData *)privateKey;
++(NSMutableData *)publicKeyGivenPrivateKey:(NSData *)privateKey;
 
-+(NSData *)makeSharedSecretWithMyPrivateKey:(NSData *)privateKey
++(NSMutableData *)makeSharedSecretWithMyPrivateKey:(NSData *)privateKey
                           andTheirPublicKey:(NSData *)publicKey;
 
 @end

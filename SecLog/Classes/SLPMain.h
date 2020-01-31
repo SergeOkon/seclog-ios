@@ -20,9 +20,6 @@ typedef enum {
 
 @property (nonatomic, readwrite) BOOL outputDateToConsoleLog;
 
-@property (nonatomic, readwrite) NSNumber *maxLogfiles;
-@property (nonatomic, readwrite) NSNumber *maxLogSpaceMib;
-
 + (instancetype)sharedInstance;
 
 // https://stackoverflow.com/a/22481129
@@ -31,7 +28,7 @@ typedef enum {
 + (instancetype)new __attribute__((unavailable("not available, use sharedInstance")));
 - (instancetype)copy __attribute__((unavailable("not available, use sharedInstance")));
 
-- (void)log:(NSString *)message level:(SecLogLevel)level;
+// Convinient Calls for Messages
 - (void)fatal:(NSString *)fatalMessage;
 - (void)error:(NSString *)errorMessage;
 - (void)warn:(NSString *)warningMessage;
@@ -39,7 +36,15 @@ typedef enum {
 - (void)debug:(NSString *)debugMessage;
 - (void)trace:(NSString *)traceMessage;
 
-- (void)cleanup;
+// Generic Loggers for all data types.
+-(void)logMessage:(NSString *)message logLevel:(SecLogLevel)level;
+-(void)logData:(NSData *)data logLevel:(SecLogLevel)level;
+-(void)logImage:(NSData *)imageData logLevel:(SecLogLevel)level;
+-(void)logData: (NSData *)data;
+-(void)logImage:(NSData *)imageData;
+
++(void)cleanUpKeepingLogFiles:(NSUInteger)nFiles
+         maxTotalLogSizeInMiB:(NSUInteger)maxSizeMb;
 
 @end
 

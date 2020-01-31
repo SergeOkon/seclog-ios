@@ -1,3 +1,5 @@
+@import Foundation;
+
 #import "SLPFrame.h"
 
 typedef enum {

@@ -1,5 +1,7 @@
+@import Foundation;
+@import Security;
+
 #import "SLPKeychain.h"
-#import <Security/Security.h>
 
 @implementation SLPKeychain
 
